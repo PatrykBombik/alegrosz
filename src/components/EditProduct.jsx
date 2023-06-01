@@ -1,16 +1,13 @@
 import React, { Component } from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import { Alert, Button, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import { useParams } from "react-router-dom";
 
 class EditProduct extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            product: {},
-        };
-    }
+    state = {
+        product: {},
+    };
 
     componentDidMount() {
         this.getProduct(this.props.productId).then((product) => {
@@ -18,30 +15,70 @@ class EditProduct extends Component {
         });
     }
 
+    componentDidUpdate() {
+        if (this.state.isMessage) {
+            setTimeout(() => {
+                this.setState({ isMessage: false });
+            }, 5000);
+        }
+    }
+
     async getProduct(id) {
         const response = await fetch(`http://localhost:3000/products/${id}`);
         return await response.json();
     }
 
+    async updateProduct(id, data) {
+        const response = await fetch(`http://localhost:3000/products/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    }
+
+    handleSubmit = async (event) => {
+        event.preventDefault();
+        await this.updateProduct(this.props.productId, this.state.product);
+        this.setState({ isMessage: true });
+    };
+
     render() {
-        const {
-            product: { id, name, description, price, quantity },
-        } = this.state;
+        const { product } = this.state;
         return (
             <Container maxWidth="xl" sx={{ marginTop: "20px" }}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <Typography variant="h3" gutterBottom>
-                            Edit Product {name}
+                            Edit Product {product.name}
                         </Typography>
                     </Grid>
+                    <Grid item xs={12}>
+                        {this.state.isMessage && (
+                            <Alert severity="success">
+                                Data has been saved
+                            </Alert>
+                        )}
+                    </Grid>
                     <Grid item xs={6}>
-                        <form onSubmit={() => {}}>
+                        <form onSubmit={this.handleSubmit}>
                             <TextField
                                 id="name"
                                 label="Product Name"
                                 variant="outlined"
                                 fullWidth
+                                value={product.name}
+                                onChange={(event) => {
+                                    this.setState({
+                                        product: {
+                                            ...product,
+                                            name: event.target.value,
+                                        },
+                                    });
+                                }}
+                                InputLabelProps={{ shrink: true }}
                                 sx={{ marginBottom: "20px" }}
                             />
 
@@ -51,7 +88,17 @@ class EditProduct extends Component {
                                 variant="outlined"
                                 multiline
                                 fullWidth
+                                value={product.description}
+                                onChange={(event) => {
+                                    this.setState({
+                                        product: {
+                                            ...product,
+                                            description: event.target.value,
+                                        },
+                                    });
+                                }}
                                 rows={4}
+                                InputLabelProps={{ shrink: true }}
                                 sx={{ marginBottom: "20px" }}
                             />
 
@@ -62,7 +109,17 @@ class EditProduct extends Component {
                                 type="number"
                                 min="0"
                                 fullWidth
+                                value={product.price}
+                                onChange={(event) => {
+                                    this.setState({
+                                        product: {
+                                            ...product,
+                                            price: event.target.valueAsNumber,
+                                        },
+                                    });
+                                }}
                                 InputProps={{ inputProps: { min: 0 } }}
+                                InputLabelProps={{ shrink: true }}
                                 sx={{ marginBottom: "20px" }}
                             />
 
@@ -72,12 +129,23 @@ class EditProduct extends Component {
                                 variant="outlined"
                                 type="number"
                                 fullWidth
+                                value={product.quantity}
+                                onChange={(event) => {
+                                    this.setState({
+                                        product: {
+                                            ...product,
+                                            quantity:
+                                                event.target.valueAsNumber,
+                                        },
+                                    });
+                                }}
                                 InputProps={{ inputProps: { min: 0 } }}
+                                InputLabelProps={{ shrink: true }}
                                 sx={{ marginBottom: "20px" }}
                             />
 
                             <Button type="submit" variant="contained">
-                                Add Product
+                                Save Product
                             </Button>
                         </form>
                     </Grid>

@@ -11,7 +11,7 @@
       "name": "Smartfon Samsung Galaxy S21",
       "description": "Nowoczesny smartfon z najlepszymi funkcjami i wydajnością",
       "id": 2,
-      "price": 2599.99,
+      "price": "2600",
       "quantity": 10
     },
     {
