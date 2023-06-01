@@ -4,7 +4,7 @@ import ProductSearch from "./components/ProductSearch.jsx";
 import ProductList from "./components/ProductList.jsx";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
-import { InputLabel } from "@mui/material";
+import { CircularProgress, InputLabel } from "@mui/material";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useSearchParams } from "react-router-dom";
@@ -22,12 +22,34 @@ function App() {
     }, [sortByPrice]);
 
     useEffect(() => {
-        getProducts().then((data) => setProducts(data));
+        const controller = new AbortController();
+        getProducts(controller.signal).then((data) => setProducts(data));
+
+        return () => {
+            controller.abort();
+        };
     }, []);
 
-    async function getProducts() {
-        const response = await fetch("http://localhost:3000/products");
+    async function getProducts(signal) {
+        const response = await fetch("http://localhost:3000/products", {
+            signal,
+        });
         return await response.json();
+    }
+
+    if (!products.length) {
+        return (
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: "100vh",
+                }}
+            >
+                <CircularProgress color="success" />
+            </div>
+        );
     }
 
     return (
