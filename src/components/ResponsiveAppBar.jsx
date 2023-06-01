@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
+import Cart from "./Cart.jsx";
 
 const pages = [
     { page: "Products", url: "/" },
@@ -149,6 +150,7 @@ function ResponsiveAppBar() {
                             </Button>
                         ))}
                     </Box>
+                    <Cart style={{ marginRight: "20px" }} />
 
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">

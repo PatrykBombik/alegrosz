@@ -5,7 +5,7 @@
       "description": "Wysokiej jakości telewizor LED o rozmiarze 55 cali",
       "id": 1,
       "price": 1999.99,
-      "quantity": 5
+      "quantity": -8
     },
     {
       "name": "Smartfon Samsung Galaxy S21",
@@ -19,7 +19,7 @@
       "description": "Wyjątkowo wydajny laptop z ekranem 15 cali i najnowszym procesorem",
       "id": 3,
       "price": 3999.99,
-      "quantity": 3
+      "quantity": 0
     },
     {
       "name": "Słuchawki bezprzewodowe Sony WH-1000XM4",

@@ -12,11 +12,14 @@ import {
 } from "@mui/material";
 import CardActions from "@mui/material/CardActions";
 import Container from "@mui/material/Container";
+import { useContext } from "react";
+import { CartContext } from "../../context/CartContext.jsx";
 
 function ProductDetails() {
     const [product, setProduct] = useState({});
     const { productId } = useParams();
     const navigate = useNavigate();
+    const { setCart } = useContext(CartContext);
 
     useEffect(() => {
         getProduct(productId).then((product) => setProduct(product));
@@ -36,6 +39,24 @@ function ProductDetails() {
     async function deleteProduct() {
         await deleteProductAPI(productId);
         navigate("/");
+    }
+
+    async function updateStock(id, quantity) {
+        const response = await fetch(`http://localhost:3000/products/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                quantity,
+            }),
+        });
+        return response.json();
+    }
+    async function buyProduct() {
+        setCart((prev) => prev + product.price);
+        setProduct({ ...product, quantity: product.quantity - 1 });
+        await updateStock(productId, product.quantity - 1);
     }
 
     return (
@@ -100,6 +121,13 @@ function ProductDetails() {
                                     variant="outlined"
                                 >
                                     Delete
+                                </Button>
+                                <Button
+                                    onClick={buyProduct}
+                                    size="small"
+                                    variant="outlined"
+                                >
+                                    Buy
                                 </Button>
                             </CardActions>
                         </Card>
